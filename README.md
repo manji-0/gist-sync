@@ -18,25 +18,37 @@ Cursor / VS Code 拡張機能。Markdown ファイルで **Sync Mode** をオン
 
 ## インストール
 
-### VSIX から（推奨）
+### Quick install（Release から）
+
+[最新リリース](https://github.com/manji-0/gist-sync/releases/latest) の VSIX をそのまま入れます。
+
+**GitHub CLI:**
+
+```bash
+gh release download --repo manji-0/gist-sync --pattern '*.vsix' -D /tmp
+cursor --install-extension /tmp/gist-sync-*.vsix --force
+```
+
+**curl（CLI なし）:**
+
+```bash
+curl -fsSL -o /tmp/gist-sync.vsix \
+  https://github.com/manji-0/gist-sync/releases/latest/download/gist-sync-0.1.2.vsix
+cursor --install-extension /tmp/gist-sync.vsix --force
+```
+
+VS Code の場合は `cursor` を `code` に置き換えてください。
+
+インストール後、**Developer: Reload Window** でウィンドウをリロードします。
+
+### ソースからビルド
 
 ```bash
 git clone https://github.com/manji-0/gist-sync.git
 cd gist-sync
 devbox run bootstrap
 devbox run package
-cursor --install-extension dist/gist-sync-0.1.2.vsix --force
-```
-
-Cursor / VS Code をリロード（**Developer: Reload Window**）してください。
-
-### 開発用に実行
-
-```bash
-git clone https://github.com/manji-0/gist-sync.git
-cd gist-sync
-devbox run bootstrap
-devbox run dev
+cursor --install-extension dist/gist-sync-*.vsix --force
 ```
 
 ## クイックスタート
