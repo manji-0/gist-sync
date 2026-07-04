@@ -2,7 +2,7 @@
   "name": "gist-sync",
   "displayName": "Gist Sync",
   "description": "Sync Markdown files to GitHub Gist when sync mode is enabled",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "packageManager": "pnpm@10.12.1",
   "publisher": "gist-sync",
   "license": "MIT",
@@ -21,6 +21,7 @@
     "Other"
   ],
   "activationEvents": [
+    "onStartupFinished",
     "onLanguage:markdown"
   ],
   "extensionDependencies": [
