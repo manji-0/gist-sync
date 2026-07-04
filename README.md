@@ -33,7 +33,7 @@ cursor --install-extension /tmp/gist-sync-*.vsix --force
 
 ```bash
 curl -fsSL -o /tmp/gist-sync.vsix \
-  https://github.com/manji-0/gist-sync/releases/latest/download/gist-sync-0.2.0.vsix
+  https://github.com/manji-0/gist-sync/releases/latest/download/gist-sync-0.2.2.vsix
 cursor --install-extension /tmp/gist-sync.vsix --force
 ```
 
