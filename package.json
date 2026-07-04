@@ -2,7 +2,7 @@
   "name": "gist-sync",
   "displayName": "Gist Sync",
   "description": "Sync Markdown files to GitHub Gist when sync mode is enabled",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "packageManager": "pnpm@10.12.1",
   "publisher": "gist-sync",
   "license": "MIT",
@@ -54,6 +54,10 @@
       {
         "command": "gistSync.linkGistOverwrite",
         "title": "Gist Sync: Link to Gist (Overwrite)"
+      },
+      {
+        "command": "gistSync.unlinkGist",
+        "title": "Gist Sync: Unlink Gist"
       },
       {
         "command": "gistSync.signIn",
@@ -124,7 +128,11 @@
       "properties": {
         "gistSync.authMethod": {
           "type": "string",
-          "enum": ["auto", "oauth", "pat"],
+          "enum": [
+            "auto",
+            "oauth",
+            "pat"
+          ],
           "default": "auto",
           "enumDescriptions": [
             "Sign in with GitHub (OAuth). Fall back to Personal Access Token if needed.",
@@ -164,7 +172,7 @@
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
-    "compile": "tsc -p ./",
+    "compile": "rm -rf out && tsc -p ./",
     "watch": "tsc -watch -p ./",
     "test": "vitest run",
     "lint": "eslint src --ext ts",
@@ -177,5 +185,10 @@
     "@vscode/vsce": "^3.2.1",
     "typescript": "^5.3.3",
     "vitest": "^3.0.5"
+  },
+  "dependencies": {
+    "@standard-schema/spec": "^1.1.0",
+    "neverthrow": "^8.2.0",
+    "zod": "^4.4.3"
   }
 }

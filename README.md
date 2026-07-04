@@ -33,7 +33,7 @@ cursor --install-extension /tmp/gist-sync-*.vsix --force
 
 ```bash
 curl -fsSL -o /tmp/gist-sync.vsix \
-  https://github.com/manji-0/gist-sync/releases/latest/download/gist-sync-0.1.2.vsix
+  https://github.com/manji-0/gist-sync/releases/latest/download/gist-sync-0.2.0.vsix
 cursor --install-extension /tmp/gist-sync.vsix --force
 ```
 
@@ -119,14 +119,24 @@ pnpm run dev
 
 ## アーキテクチャ
 
+Kamae スタイルのレイヤード構成（domain / application / boundary / infrastructure / presentation）:
+
 ```mermaid
 flowchart LR
   MD[Markdown file] -->|save| SM[SyncManager]
-  SM -->|read state| SS[SyncState]
-  SM -->|create/update| GS[GistService]
-  GS -->|REST API| GH[GitHub Gist API]
-  SS -->|persist| VS[Extension GlobalState]
+  SM -->|use case| SF[sync-file]
+  SF -->|plan| SP[SyncPatch]
+  SF -->|API| GC[GistClient]
+  GC -->|REST| GH[GitHub Gist API]
+  SM -->|persist| SS[SyncStateStore]
+  SS -->|FileLink| VS[Extension GlobalState]
 ```
+
+- **domain** — `GistId`, `GistFilename`, `FileLink`, `SyncPatch`, `SyncError`（判別共用体）
+- **boundary** — GitHub API レスポンスの Zod 検証
+- **application** — `sync-file`, `link-file-to-gist` ユースケース
+- **infrastructure** — GitHub クライアント、VS Code 認証・状態永続化
+- **presentation** — `SyncManager`, `StatusBar`
 
 ## ライセンス
 

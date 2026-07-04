@@ -1,16 +1,21 @@
 import * as vscode from "vscode";
-import { GITHUB_AUTH_PROVIDER } from "./githubAuth";
-import { GistService } from "./gistService";
-import { StatusBar } from "./statusBar";
-import { SyncManager } from "./syncManager";
-import { SyncState } from "./syncState";
+import { createVscodeAuthPort } from "./infrastructure/vscode/auth-port";
+import { GITHUB_AUTH_PROVIDER } from "./infrastructure/vscode/github-auth-constants";
+import { migrateLegacyFileLinks } from "./infrastructure/vscode/legacy-mapping-migration";
+import { createSyncStateStore } from "./infrastructure/vscode/sync-state-store";
+import { StatusBar } from "./presentation/status-bar";
+import { SyncManager } from "./presentation/sync-manager";
 
-export function activate(context: vscode.ExtensionContext): void {
-  const gist = new GistService(context);
-  void gist.auth.migratePatFromConfig();
-  const syncState = new SyncState(context.globalState);
+export async function activate(
+  context: vscode.ExtensionContext
+): Promise<void> {
+  const auth = createVscodeAuthPort(context);
+  void auth.migratePatFromConfig();
+
+  await migrateLegacyFileLinks(context.globalState);
+  const store = createSyncStateStore(context.globalState);
   const statusBar = new StatusBar();
-  const syncManager = new SyncManager(gist, syncState, statusBar);
+  const syncManager = new SyncManager({ auth, store }, statusBar);
 
   context.subscriptions.push(
     statusBar,
@@ -37,7 +42,7 @@ export function activate(context: vscode.ExtensionContext): void {
       syncManager.unlinkGist(uri)
     ),
     vscode.commands.registerCommand("gistSync.signIn", async () => {
-      const ok = await gist.auth.signIn();
+      const ok = await auth.signIn();
       if (!ok) {
         void vscode.window.showWarningMessage(
           "GitHub sign-in was cancelled or the GitHub authentication provider is unavailable."
@@ -46,13 +51,13 @@ export function activate(context: vscode.ExtensionContext): void {
       syncManager.refreshUi();
     }),
     vscode.commands.registerCommand("gistSync.setToken", async () => {
-      const ok = await gist.auth.promptForPat();
+      const ok = await auth.promptForPat();
       if (ok) {
         syncManager.refreshUi();
       }
     }),
     vscode.commands.registerCommand("gistSync.clearToken", async () => {
-      await gist.clearToken();
+      await auth.clearPatToken();
       void vscode.window.showInformationMessage("Saved Personal Access Token cleared.");
       syncManager.refreshUi();
     }),

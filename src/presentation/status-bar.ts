@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
-import { SyncState } from "./syncState";
+import type { FileLink } from "../domain/file-link";
+import type { SyncStateStore } from "../infrastructure/vscode/sync-state-store";
 
 export class StatusBar {
   private readonly item: vscode.StatusBarItem;
@@ -12,9 +13,13 @@ export class StatusBar {
     this.item.command = "gistSync.toggleSyncMode";
   }
 
-  showForMarkdown(uri: vscode.Uri, syncState: SyncState): void {
-    const enabled = syncState.isSyncEnabled(uri);
-    const mapping = syncState.getMapping(uri);
+  showForMarkdown(
+    uri: string,
+    store: SyncStateStore,
+    link?: FileLink
+  ): void {
+    const enabled = store.isSyncEnabled(uri);
+    const mapping = link ?? store.getLink(uri);
 
     this.item.text = enabled
       ? mapping
