@@ -1,31 +1,31 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { schemaResult } from "../boundary/schema-result";
 import { GistId, type GistId as GistIdType } from "./gist-id";
 import { GistFilename, type GistFilename as GistFilenameType } from "./gist-filename";
 
-const PendingRenameSchema = z.object({
+const PendingRenameSchema = v.object({
   remove: GistFilename.schema,
 });
 
-const FileLinkSchema = z.object({
+const FileLinkSchema = v.object({
   gistId: GistId.schema,
-  gistUrl: z.string().url(),
+  gistUrl: v.pipe(v.string(), v.url()),
   filename: GistFilename.schema,
-  rawUrl: z.string().url().optional(),
-  pendingRename: PendingRenameSchema.optional(),
-  overwrite: z.boolean(),
-  lastSyncedAt: z.string(),
+  rawUrl: v.optional(v.pipe(v.string(), v.url())),
+  pendingRename: v.optional(PendingRenameSchema),
+  overwrite: v.boolean(),
+  lastSyncedAt: v.string(),
 });
 
-export type FileLink = Readonly<z.infer<typeof FileLinkSchema>>;
+export type FileLink = Readonly<v.InferOutput<typeof FileLinkSchema>>;
 
-export type PendingRename = z.infer<typeof PendingRenameSchema>;
+export type PendingRename = v.InferOutput<typeof PendingRenameSchema>;
 
 export const FileLink = {
   schema: FileLinkSchema,
   parse: schemaResult(FileLinkSchema),
 
-  create: (input: z.input<typeof FileLinkSchema>) =>
+  create: (input: v.InferInput<typeof FileLinkSchema>) =>
     schemaResult(FileLinkSchema)(input),
 
   clearPendingRename: (link: FileLink): FileLink => ({

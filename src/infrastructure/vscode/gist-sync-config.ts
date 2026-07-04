@@ -1,16 +1,16 @@
 import * as vscode from "vscode";
-import { z } from "zod";
+import * as v from "valibot";
 import { schemaResult } from "../../boundary/schema-result";
 
-const GistSyncConfigSchema = z.object({
-  authMethod: z.enum(["auto", "oauth", "pat"]),
-  syncOnSave: z.boolean(),
-  debounceMs: z.number().min(0),
-  gistDescription: z.string(),
-  gistPublic: z.boolean(),
+const GistSyncConfigSchema = v.object({
+  authMethod: v.picklist(["auto", "oauth", "pat"]),
+  syncOnSave: v.boolean(),
+  debounceMs: v.pipe(v.number(), v.minValue(0)),
+  gistDescription: v.string(),
+  gistPublic: v.boolean(),
 });
 
-export type GistSyncConfig = z.infer<typeof GistSyncConfigSchema>;
+export type GistSyncConfig = v.InferOutput<typeof GistSyncConfigSchema>;
 
 const defaultConfig = {
   authMethod: "auto",

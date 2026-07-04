@@ -1,16 +1,15 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { err, ok, type Result } from "neverthrow";
 import { schemaResult, type ValidationError } from "../boundary/schema-result";
 import type { SyncError } from "./sync-errors";
 
-export const GistFilenameBrand = Symbol();
+const GistFilenameSchema = v.pipe(
+  v.string(),
+  v.minLength(1, "Filename is required"),
+  v.brand("GistFilename")
+);
 
-const GistFilenameSchema = z
-  .string()
-  .min(1, "Filename is required")
-  .brand<typeof GistFilenameBrand>();
-
-export type GistFilename = z.infer<typeof GistFilenameSchema>;
+export type GistFilename = v.InferOutput<typeof GistFilenameSchema>;
 
 export type LinkFilenameMode = "select" | "overwrite";
 

@@ -1,21 +1,21 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { schemaResult } from "./schema-result";
 import { GistId } from "../domain/gist-id";
 import { GistFilename } from "../domain/gist-filename";
 import { FileLink } from "../domain/file-link";
 
-const GistFileEntrySchema = z.object({
-  filename: z.string().optional(),
-  raw_url: z.string().url().optional(),
+const GistFileEntrySchema = v.object({
+  filename: v.optional(v.string()),
+  raw_url: v.optional(v.pipe(v.string(), v.url())),
 });
 
-export const GistResponseSchema = z.object({
+export const GistResponseSchema = v.object({
   id: GistId.schema,
-  html_url: z.string().url(),
-  files: z.record(z.string(), GistFileEntrySchema),
+  html_url: v.pipe(v.string(), v.url()),
+  files: v.record(v.string(), GistFileEntrySchema),
 });
 
-export type GistResponse = z.infer<typeof GistResponseSchema>;
+export type GistResponse = v.InferOutput<typeof GistResponseSchema>;
 
 export const GistResponse = {
   schema: GistResponseSchema,

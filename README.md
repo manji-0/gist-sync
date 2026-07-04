@@ -126,12 +126,12 @@ flowchart LR
 | Layer | Responsibility |
 |-------|----------------|
 | **domain** | `GistId`, `GistFilename`, `FileLink`, `SyncPatch`, `SyncError` |
-| **boundary** | Zod validation for GitHub API responses |
+| **boundary** | Valibot validation for GitHub API responses |
 | **application** | `sync-file`, `link-file-to-gist` use cases |
 | **infrastructure** | GitHub client, VS Code auth & persistence |
 | **presentation** | `SyncManager`, `StatusBar` |
 
-Runtime dependencies (`zod`, `neverthrow`) are bundled with **esbuild** into `out/extension.js` for VSIX packaging.
+Runtime dependencies (`valibot`, `neverthrow`) are bundled with **esbuild** into `out/extension.js` for VSIX packaging.
 
 ## Development
 

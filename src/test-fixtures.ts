@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as v from "valibot";
 import {
   GistResponse,
   GistResponseSchema,
@@ -15,7 +15,7 @@ export const fixtureFileLinkInput = {
   filename: "foo.md",
   overwrite: false,
   lastSyncedAt: "2024-01-01T00:00:00.000Z",
-} as const satisfies z.input<typeof FileLink.schema>;
+} as const satisfies v.InferInput<typeof FileLink.schema>;
 
 export const fixtureGistResponseInput = {
   id: FIXTURE_GIST_ID,
@@ -26,7 +26,7 @@ export const fixtureGistResponseInput = {
     },
     "README.md": {},
   },
-} as const satisfies z.input<typeof GistResponseSchema>;
+} as const satisfies v.InferInput<typeof GistResponseSchema>;
 
 export const fixtureGistId = () => GistId.parse(FIXTURE_GIST_ID)._unsafeUnwrap();
 

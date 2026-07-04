@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import { err, ok, type Result } from "neverthrow";
-import { z } from "zod";
+import * as v from "valibot";
 import { schemaResult } from "../../boundary/schema-result";
 import type { FileLink } from "../../domain/file-link";
 import { FileLink as FileLinkParser } from "../../domain/file-link";
@@ -10,14 +10,14 @@ import { GistId } from "../../domain/gist-id";
 const FILE_LINKS_KEY = "gistSync.fileLinks";
 const LEGACY_MAPPINGS_KEY = "gistSync.mappings";
 
-const LegacyMappingSchema = z.object({
-  gistId: z.string(),
-  gistUrl: z.string().url(),
-  filename: z.string().min(1),
-  rawUrl: z.string().url().optional(),
-  replacesFilename: z.string().min(1).optional(),
-  overwrite: z.boolean().optional(),
-  lastSyncedAt: z.string(),
+const LegacyMappingSchema = v.object({
+  gistId: v.string(),
+  gistUrl: v.pipe(v.string(), v.url()),
+  filename: v.pipe(v.string(), v.minLength(1)),
+  rawUrl: v.optional(v.pipe(v.string(), v.url())),
+  replacesFilename: v.optional(v.pipe(v.string(), v.minLength(1))),
+  overwrite: v.optional(v.boolean()),
+  lastSyncedAt: v.string(),
 });
 
 export const migrateLegacyMapping = (raw: unknown): Result<FileLink, void> => {

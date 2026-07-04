@@ -1,15 +1,15 @@
-import { z } from "zod";
+import * as v from "valibot";
 import { schemaResult } from "../boundary/schema-result";
 
-export const GistIdBrand = Symbol();
 const gistIdPattern = /^[a-f0-9]{20,}$/i;
 
-const GistIdSchema = z
-  .string()
-  .regex(gistIdPattern, "Invalid gist id")
-  .brand<typeof GistIdBrand>();
+const GistIdSchema = v.pipe(
+  v.string(),
+  v.regex(gistIdPattern, "Invalid gist id"),
+  v.brand("GistId")
+);
 
-export type GistId = z.infer<typeof GistIdSchema>;
+export type GistId = v.InferOutput<typeof GistIdSchema>;
 
 const parseId = schemaResult(GistIdSchema);
 

@@ -2,7 +2,7 @@
   "name": "gist-sync",
   "displayName": "Gist Sync",
   "description": "Sync Markdown files to GitHub Gist with per-file sync mode, OAuth, and status bar controls",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "packageManager": "pnpm@10.12.1",
   "publisher": "gist-sync",
   "license": "MIT",
@@ -196,6 +196,6 @@
   "dependencies": {
     "@standard-schema/spec": "^1.1.0",
     "neverthrow": "^8.2.0",
-    "zod": "^4.4.3"
+    "valibot": "^1.4.2"
   }
 }
