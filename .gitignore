@@ -1,0 +1,9 @@
+out
+node_modules
+dist
+*.vsix
+.DS_Store
+.devbox
+.dagayn
+vitest.config.js
+vitest.config.js.map

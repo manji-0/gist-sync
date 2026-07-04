@@ -1,0 +1,181 @@
+{
+  "name": "gist-sync",
+  "displayName": "Gist Sync",
+  "description": "Sync Markdown files to GitHub Gist when sync mode is enabled",
+  "version": "0.1.2",
+  "packageManager": "pnpm@10.12.1",
+  "publisher": "gist-sync",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manji-0/gist-sync.git"
+  },
+  "bugs": {
+    "url": "https://github.com/manji-0/gist-sync/issues"
+  },
+  "homepage": "https://github.com/manji-0/gist-sync#readme",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:markdown"
+  ],
+  "extensionDependencies": [
+    "vscode.github-authentication"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "gistSync.toggleSyncMode",
+        "title": "Gist Sync: Toggle Sync Mode",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "gistSync.syncNow",
+        "title": "Gist Sync: Sync Now"
+      },
+      {
+        "command": "gistSync.openGist",
+        "title": "Gist Sync: Open Gist in Browser"
+      },
+      {
+        "command": "gistSync.copyGistUrl",
+        "title": "Gist Sync: Copy Gist URL",
+        "icon": "$(clippy)"
+      },
+      {
+        "command": "gistSync.linkGist",
+        "title": "Gist Sync: Link to Existing Gist"
+      },
+      {
+        "command": "gistSync.linkGistOverwrite",
+        "title": "Gist Sync: Link to Gist (Overwrite)"
+      },
+      {
+        "command": "gistSync.signIn",
+        "title": "Gist Sync: Sign in to GitHub"
+      },
+      {
+        "command": "gistSync.setToken",
+        "title": "Gist Sync: Set Personal Access Token"
+      },
+      {
+        "command": "gistSync.clearToken",
+        "title": "Gist Sync: Clear GitHub Token"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "gistSync.toggleSyncMode",
+          "when": "resourceLangId == markdown",
+          "group": "navigation@1"
+        },
+        {
+          "command": "gistSync.copyGistUrl",
+          "when": "resourceLangId == markdown && gistSync.hasGist",
+          "group": "navigation@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "gistSync.toggleSyncMode",
+          "when": "resourceLangId == markdown",
+          "group": "gistSync@1"
+        },
+        {
+          "command": "gistSync.syncNow",
+          "when": "resourceLangId == markdown",
+          "group": "gistSync@2"
+        },
+        {
+          "command": "gistSync.openGist",
+          "when": "resourceLangId == markdown && gistSync.hasGist",
+          "group": "gistSync@3"
+        },
+        {
+          "command": "gistSync.copyGistUrl",
+          "when": "resourceLangId == markdown && gistSync.hasGist",
+          "group": "gistSync@4"
+        },
+        {
+          "command": "gistSync.linkGist",
+          "when": "resourceLangId == markdown",
+          "group": "gistSync@5"
+        },
+        {
+          "command": "gistSync.linkGistOverwrite",
+          "when": "resourceLangId == markdown",
+          "group": "gistSync@6"
+        },
+        {
+          "command": "gistSync.unlinkGist",
+          "when": "resourceLangId == markdown && gistSync.hasGist",
+          "group": "gistSync@7"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Gist Sync",
+      "properties": {
+        "gistSync.authMethod": {
+          "type": "string",
+          "enum": ["auto", "oauth", "pat"],
+          "default": "auto",
+          "enumDescriptions": [
+            "Sign in with GitHub (OAuth). Fall back to Personal Access Token if needed.",
+            "GitHub OAuth only via the editor's GitHub authentication provider.",
+            "Personal Access Token only via **Gist Sync: Set Personal Access Token** (stored in secure storage)."
+          ],
+          "description": "How to authenticate with GitHub."
+        },
+        "gistSync.githubToken": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "**Deprecated.** Use **Gist Sync: Set Personal Access Token** instead. If set, the value is migrated once into secure storage on activation."
+        },
+        "gistSync.syncOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically sync to Gist when a Markdown file with sync mode enabled is saved."
+        },
+        "gistSync.gistDescription": {
+          "type": "string",
+          "default": "",
+          "description": "Default description for new gists. Empty uses the file name."
+        },
+        "gistSync.gistPublic": {
+          "type": "boolean",
+          "default": false,
+          "description": "Create gists as public (secret gists are unlisted but not searchable)."
+        },
+        "gistSync.debounceMs": {
+          "type": "number",
+          "default": 500,
+          "minimum": 0,
+          "description": "Debounce delay in milliseconds before syncing after save."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "vitest run",
+    "lint": "eslint src --ext ts",
+    "package": "pnpm run compile && mkdir -p dist && pnpm exec vsce package --no-dependencies --out dist/",
+    "dev": "bash ./scripts/dev.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.1",
+    "typescript": "^5.3.3",
+    "vitest": "^3.0.5"
+  }
+}

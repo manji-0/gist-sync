@@ -1,0 +1,17 @@
+.vscode/**
+.vscode-test/**
+src/**
+.gitignore
+tsconfig.json
+**/*.map
+**/*.ts
+node_modules/**
+.devbox/**
+.dagayn/**
+devbox.json
+devbox.lock
+scripts/**
+dist/**
+pnpm-lock.yaml
+vitest.config.ts
+vitest.config.js
