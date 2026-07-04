@@ -1,6 +1,9 @@
 import { errAsync, okAsync, ResultAsync } from "neverthrow";
 import { GistId } from "../domain/gist-id";
-import { GistResponse, type GistResponse as GistResponseType } from "../boundary/gist-response-schema";
+import {
+  GistResponse,
+  type GistResponse as GistResponseType,
+} from "../boundary/gist-response-schema";
 import type { FileLink } from "../domain/file-link";
 import { GistFilename, type LinkFilenameMode } from "../domain/gist-filename";
 import type { SyncError } from "../domain/sync-errors";
@@ -42,7 +45,7 @@ export const createLinkFileToGist = (client: GistClient) => ({
         input.localFilename,
         filenames,
         input.mode,
-        input.selectedFilename
+        input.selectedFilename,
       );
 
       if (filenameResult.isErr()) {

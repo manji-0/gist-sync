@@ -6,17 +6,10 @@ export class StatusBar {
   private readonly item: vscode.StatusBarItem;
 
   constructor() {
-    this.item = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Right,
-      100
-    );
+    this.item = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
   }
 
-  showForMarkdown(
-    uri: string,
-    store: SyncStateStore,
-    link?: FileLink
-  ): void {
+  showForMarkdown(uri: string, store: SyncStateStore, link?: FileLink): void {
     const enabled = store.isSyncEnabled(uri);
     const mapping = link ?? store.getLink(uri);
 
@@ -55,9 +48,7 @@ export class StatusBar {
   showError(message: string): void {
     this.item.text = "$(error) Gist Sync: error";
     this.item.tooltip = message;
-    this.item.backgroundColor = new vscode.ThemeColor(
-      "statusBarItem.errorBackground"
-    );
+    this.item.backgroundColor = new vscode.ThemeColor("statusBarItem.errorBackground");
     this.item.show();
   }
 

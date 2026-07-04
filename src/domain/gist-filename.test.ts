@@ -19,22 +19,16 @@ describe("GistFilename", () => {
     const other = fixtureGistFilename("other.md");
 
     it("uses local name in overwrite mode", () => {
-      expect(
-        GistFilename.resolveForLink(local, [other], "overwrite")._unsafeUnwrap()
-      ).toBe(local);
+      expect(GistFilename.resolveForLink(local, [other], "overwrite")._unsafeUnwrap()).toBe(local);
     });
 
     it("picks the only gist file in select mode", () => {
-      expect(
-        GistFilename.resolveForLink(local, [other], "select")._unsafeUnwrap()
-      ).toBe(other);
+      expect(GistFilename.resolveForLink(local, [other], "select")._unsafeUnwrap()).toBe(other);
     });
 
     it("requires selection when multiple files and no match", () => {
       const readme = fixtureGistFilename("README.md");
-      expect(
-        GistFilename.resolveForLink(local, [other, readme], "select").isErr()
-      ).toBe(true);
+      expect(GistFilename.resolveForLink(local, [other, readme], "select").isErr()).toBe(true);
     });
   });
 });

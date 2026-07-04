@@ -1,11 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { okAsync } from "neverthrow";
 import { createSyncFile } from "./sync-file";
-import {
-  fixtureFileLink,
-  fixtureGistFilename,
-  fixtureGistResponse,
-} from "../test-fixtures";
+import { fixtureFileLink, fixtureGistFilename, fixtureGistResponse } from "../test-fixtures";
 
 describe("createSyncFile", () => {
   const gist = fixtureGistResponse();

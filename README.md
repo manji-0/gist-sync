@@ -62,21 +62,21 @@ cursor --install-extension dist/gist-sync-*.vsix --force
 
 ## Status bar
 
-| State | Click action |
-|-------|----------------|
-| Sync **OFF** | Quick Pick: create a new Gist or link an existing one (enables sync) |
-| Sync **ON** + linked Gist | Copy Gist URL (page or raw) |
-| Sync **ON** + no link yet | Toggle sync off |
+| State                     | Click action                                                         |
+| ------------------------- | -------------------------------------------------------------------- |
+| Sync **OFF**              | Quick Pick: create a new Gist or link an existing one (enables sync) |
+| Sync **ON** + linked Gist | Copy Gist URL (page or raw)                                          |
+| Sync **ON** + no link yet | Toggle sync off                                                      |
 
 ## Authentication
 
 Default (`gistSync.authMethod`: `auto`) uses **GitHub OAuth**.
 
-| `authMethod` | Behavior |
-|--------------|----------|
-| `auto` | OAuth, then PAT fallback |
-| `oauth` | OAuth only |
-| `pat` | PAT only (stored in Secret Storage) |
+| `authMethod` | Behavior                            |
+| ------------ | ----------------------------------- |
+| `auto`       | OAuth, then PAT fallback            |
+| `oauth`      | OAuth only                          |
+| `pat`        | PAT only (stored in Secret Storage) |
 
 Set a PAT via **Gist Sync: Set Personal Access Token**. Plain-text tokens in `settings.json` are deprecated and migrated to Secret Storage on activation.
 
@@ -84,29 +84,29 @@ Set a PAT via **Gist Sync: Set Personal Access Token**. Plain-text tokens in `se
 
 ## Commands
 
-| Command | Description |
-|---------|-------------|
-| Gist Sync: Enable Sync | Enable sync with new Gist or existing Gist link |
-| Gist Sync: Toggle Sync Mode | Toggle sync for the current Markdown file |
-| Gist Sync: Sync Now | Sync immediately |
-| Gist Sync: Open Gist in Browser | Open the linked Gist |
-| Gist Sync: Copy Gist URL | Copy the Gist page or raw URL |
-| Gist Sync: Link to Existing Gist | Link by URL/ID (pick file when needed) |
-| Gist Sync: Link to Gist (Overwrite) | Link and sync under the local filename |
-| Gist Sync: Unlink Gist | Remove the file↔Gist link (Gist is not deleted) |
-| Gist Sync: Sign in to GitHub | GitHub OAuth sign-in |
-| Gist Sync: Set Personal Access Token | Save PAT to Secret Storage |
-| Gist Sync: Clear GitHub Token | Clear saved PAT |
+| Command                              | Description                                     |
+| ------------------------------------ | ----------------------------------------------- |
+| Gist Sync: Enable Sync               | Enable sync with new Gist or existing Gist link |
+| Gist Sync: Toggle Sync Mode          | Toggle sync for the current Markdown file       |
+| Gist Sync: Sync Now                  | Sync immediately                                |
+| Gist Sync: Open Gist in Browser      | Open the linked Gist                            |
+| Gist Sync: Copy Gist URL             | Copy the Gist page or raw URL                   |
+| Gist Sync: Link to Existing Gist     | Link by URL/ID (pick file when needed)          |
+| Gist Sync: Link to Gist (Overwrite)  | Link and sync under the local filename          |
+| Gist Sync: Unlink Gist               | Remove the file↔Gist link (Gist is not deleted) |
+| Gist Sync: Sign in to GitHub         | GitHub OAuth sign-in                            |
+| Gist Sync: Set Personal Access Token | Save PAT to Secret Storage                      |
+| Gist Sync: Clear GitHub Token        | Clear saved PAT                                 |
 
 ## Settings (`gistSync.*`)
 
-| Setting | Default | Description |
-|---------|---------|-------------|
-| `authMethod` | `auto` | `auto` / `oauth` / `pat` |
-| `syncOnSave` | `true` | Sync when a synced file is saved |
-| `gistDescription` | `""` | Description for new Gists (empty → filename) |
-| `gistPublic` | `false` | Create public Gists |
-| `debounceMs` | `500` | Delay after save before sync (ms) |
+| Setting           | Default | Description                                  |
+| ----------------- | ------- | -------------------------------------------- |
+| `authMethod`      | `auto`  | `auto` / `oauth` / `pat`                     |
+| `syncOnSave`      | `true`  | Sync when a synced file is saved             |
+| `gistDescription` | `""`    | Description for new Gists (empty → filename) |
+| `gistPublic`      | `false` | Create public Gists                          |
+| `debounceMs`      | `500`   | Delay after save before sync (ms)            |
 
 ## Architecture
 
@@ -123,15 +123,15 @@ flowchart LR
   SS -->|FileLink| VS[Extension GlobalState]
 ```
 
-| Layer | Responsibility |
-|-------|----------------|
-| **domain** | `GistId`, `GistFilename`, `FileLink`, `SyncPatch`, `SyncError` |
-| **boundary** | Valibot validation for GitHub API responses |
-| **application** | `sync-file`, `link-file-to-gist` use cases |
-| **infrastructure** | GitHub client, VS Code auth & persistence |
-| **presentation** | `SyncManager`, `StatusBar` |
+| Layer              | Responsibility                                                 |
+| ------------------ | -------------------------------------------------------------- |
+| **domain**         | `GistId`, `GistFilename`, `FileLink`, `SyncPatch`, `SyncError` |
+| **boundary**       | Valibot validation for GitHub API responses                    |
+| **application**    | `sync-file`, `link-file-to-gist` use cases                     |
+| **infrastructure** | GitHub client, VS Code auth & persistence                      |
+| **presentation**   | `SyncManager`, `StatusBar`                                     |
 
-Runtime dependencies (`valibot`, `neverthrow`) are bundled with **esbuild** into `out/extension.js` for VSIX packaging.
+Runtime dependencies (`valibot`, `neverthrow`) are bundled with **Rollup** into `out/extension.js` for VSIX packaging.
 
 ## Development
 
@@ -139,8 +139,8 @@ With [devbox](https://www.jetify.com/devbox):
 
 ```bash
 devbox run bootstrap   # pnpm install
-devbox run compile     # esbuild bundle (minified)
-devbox run test        # tsc --noEmit + vitest
+devbox run compile     # Rollup bundle (minified)
+devbox run test        # tsc + oxlint + vitest
 devbox run package     # dist/*.vsix
 devbox run dev         # Extension Development Host
 ```
@@ -150,7 +150,9 @@ Without devbox:
 ```bash
 pnpm install
 pnpm run compile
-pnpm test
+pnpm test              # typecheck + oxlint + vitest
+pnpm run lint          # oxlint only
+pnpm run format        # oxfmt
 pnpm run package
 pnpm run dev
 ```

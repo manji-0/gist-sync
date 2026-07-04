@@ -6,7 +6,7 @@ const gistIdPattern = /^[a-f0-9]{20,}$/i;
 const GistIdSchema = v.pipe(
   v.string(),
   v.regex(gistIdPattern, "Invalid gist id"),
-  v.brand("GistId")
+  v.brand("GistId"),
 );
 
 export type GistId = v.InferOutput<typeof GistIdSchema>;

@@ -3,10 +3,7 @@ import { GistId } from "../domain/gist-id";
 import { GistFilename } from "../domain/gist-filename";
 import { GistResponse } from "../boundary/gist-response-schema";
 import { formatSyncError } from "../application/format-sync-error";
-import {
-  createLinkFileToGist,
-  type LinkMode,
-} from "../application/link-file-to-gist";
+import { createLinkFileToGist, type LinkMode } from "../application/link-file-to-gist";
 import { createSyncFileUseCase } from "../application/sync-file";
 import { applyLocalRename } from "../domain/file-link-rename";
 import { createGistClient } from "../infrastructure/github/gist-client";
@@ -29,7 +26,7 @@ export class SyncManager implements vscode.Disposable {
 
   constructor(
     private readonly deps: SyncManagerDeps,
-    private readonly statusBar: StatusBar
+    private readonly statusBar: StatusBar,
   ) {
     const client = createGistClient(deps.auth.getToken);
     this.syncFile = createSyncFileUseCase(deps.auth.getToken);
@@ -48,10 +45,7 @@ export class SyncManager implements vscode.Disposable {
     const key = active.toString();
     this.statusBar.showForMarkdown(key, this.deps.store);
     void this.setContext("gistSync.syncEnabled", this.deps.store.isSyncEnabled(key));
-    void this.setContext(
-      "gistSync.hasGist",
-      Boolean(this.deps.store.getLink(key))
-    );
+    void this.setContext("gistSync.hasGist", Boolean(this.deps.store.getLink(key)));
   }
 
   async toggleSyncMode(uri?: vscode.Uri): Promise<void> {
@@ -76,7 +70,7 @@ export class SyncManager implements vscode.Disposable {
     }
 
     void vscode.window.showInformationMessage(
-      "Gist Sync enabled for this file. Changes will sync on save."
+      "Gist Sync enabled for this file. Changes will sync on save.",
     );
     await this.syncDocument(target, { force: true });
   }
@@ -108,7 +102,7 @@ export class SyncManager implements vscode.Disposable {
       {
         title: "Enable Gist Sync",
         placeHolder: "Choose how to sync this file",
-      }
+      },
     );
     if (!picked) {
       return;
@@ -121,9 +115,7 @@ export class SyncManager implements vscode.Disposable {
     if (picked.mode === "new") {
       await this.deps.store.setSyncEnabled(key, true);
       this.refreshUi(target);
-      void vscode.window.showInformationMessage(
-        "Gist Sync enabled. Creating Gist..."
-      );
+      void vscode.window.showInformationMessage("Gist Sync enabled. Creating Gist...");
       await this.syncDocument(target, { force: true });
       return;
     }
@@ -237,7 +229,7 @@ export class SyncManager implements vscode.Disposable {
       const gistResult = await client.getGist(gistIdResult.value);
       if (gistResult.isErr()) {
         void vscode.window.showErrorMessage(
-          `Failed to link Gist: ${formatSyncError(gistResult.error)}`
+          `Failed to link Gist: ${formatSyncError(gistResult.error)}`,
         );
         return;
       }
@@ -256,7 +248,7 @@ export class SyncManager implements vscode.Disposable {
       } else {
         const picked = await vscode.window.showQuickPick(
           names.map((name) => ({ label: name })),
-          { placeHolder: "Select the Gist file to sync into" }
+          { placeHolder: "Select the Gist file to sync into" },
         );
         if (!picked?.label) {
           return;
@@ -282,15 +274,14 @@ export class SyncManager implements vscode.Disposable {
         const saved = await this.deps.store.setLink(target.toString(), link);
         if (saved.isErr()) {
           void vscode.window.showErrorMessage(
-            `Failed to link Gist: ${formatSyncError(saved.error)}`
+            `Failed to link Gist: ${formatSyncError(saved.error)}`,
           );
           return;
         }
 
         this.refreshUi(target);
 
-        const exists =
-          mode === "overwrite" && Boolean(gist.files[link.filename]);
+        const exists = mode === "overwrite" && Boolean(gist.files[link.filename]);
 
         const message =
           mode === "overwrite"
@@ -303,7 +294,7 @@ export class SyncManager implements vscode.Disposable {
           message,
           "Sync Now",
           "Copy URL",
-          "Done"
+          "Done",
         );
         if (choice === "Sync Now") {
           await this.syncDocument(target, { force: true });
@@ -312,10 +303,8 @@ export class SyncManager implements vscode.Disposable {
         }
       },
       async (error) => {
-        void vscode.window.showErrorMessage(
-          `Failed to link Gist: ${formatSyncError(error)}`
-        );
-      }
+        void vscode.window.showErrorMessage(`Failed to link Gist: ${formatSyncError(error)}`);
+      },
     );
   }
 
@@ -337,7 +326,7 @@ export class SyncManager implements vscode.Disposable {
     const confirm = await vscode.window.showWarningMessage(
       `Unlink Gist "${link.filename}" from this file? The Gist itself will not be deleted.`,
       { modal: true },
-      "Unlink"
+      "Unlink",
     );
     if (confirm !== "Unlink") {
       return;
@@ -352,9 +341,7 @@ export class SyncManager implements vscode.Disposable {
     void this.processFileRenames(event);
   }
 
-  private async processFileRenames(
-    event: vscode.FileRenameEvent
-  ): Promise<void> {
+  private async processFileRenames(event: vscode.FileRenameEvent): Promise<void> {
     for (const { oldUri, newUri } of event.files) {
       if (!isMarkdownUri(oldUri) || !isMarkdownUri(newUri)) {
         continue;
@@ -377,7 +364,7 @@ export class SyncManager implements vscode.Disposable {
         const saved = await this.deps.store.setLink(newKey, next);
         if (saved.isErr()) {
           void vscode.window.showErrorMessage(
-            `Failed to migrate Gist link after rename: ${formatSyncError(saved.error)}`
+            `Failed to migrate Gist link after rename: ${formatSyncError(saved.error)}`,
           );
         }
       }
@@ -419,28 +406,20 @@ export class SyncManager implements vscode.Disposable {
   }
 
   private resolveMarkdownUri(uri?: vscode.Uri): vscode.Uri | undefined {
-    const target =
-      uri ??
-      vscode.window.activeTextEditor?.document.uri ??
-      this.uriFromActiveTab();
+    const target = uri ?? vscode.window.activeTextEditor?.document.uri ?? this.uriFromActiveTab();
 
     if (!target || target.scheme !== "file") {
       void vscode.window.showWarningMessage("Open a Markdown file on disk first.");
       return undefined;
     }
     if (!isMarkdownUri(target)) {
-      void vscode.window.showWarningMessage(
-        "Gist Sync only supports Markdown (.md) files."
-      );
+      void vscode.window.showWarningMessage("Gist Sync only supports Markdown (.md) files.");
       return undefined;
     }
     return target;
   }
 
-  private async syncDocument(
-    uri: vscode.Uri,
-    options: { force?: boolean } = {}
-  ): Promise<void> {
+  private async syncDocument(uri: vscode.Uri, options: { force?: boolean } = {}): Promise<void> {
     const key = uri.toString();
     if (this.inFlight.has(key)) {
       return;
@@ -459,8 +438,7 @@ export class SyncManager implements vscode.Disposable {
       return;
     }
     const config = readGistSyncConfig();
-    const description =
-      config.gistDescription.trim() || localFilename;
+    const description = config.gistDescription.trim() || localFilename;
     const isPublic = config.gistPublic;
     const link = this.deps.store.getLink(key);
 
@@ -491,7 +469,7 @@ export class SyncManager implements vscode.Disposable {
           const message = formatSyncError(error);
           this.statusBar.showError(message);
           void vscode.window.showErrorMessage(`Gist Sync failed: ${message}`);
-        }
+        },
       );
     } finally {
       this.inFlight.delete(key);
@@ -511,12 +489,12 @@ export class SyncManager implements vscode.Disposable {
   }
 
   private localFilenameFromPath(
-    fsPath: string
+    fsPath: string,
   ): import("../domain/gist-filename").GistFilename | undefined {
     const result = GistFilename.fromLocalPath(fsPath);
     if (result.isErr()) {
       void vscode.window.showErrorMessage(
-        "Could not determine a valid Markdown filename for this file."
+        "Could not determine a valid Markdown filename for this file.",
       );
       return undefined;
     }

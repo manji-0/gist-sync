@@ -1,11 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { okAsync } from "neverthrow";
 import { createLinkFileToGist } from "./link-file-to-gist";
-import {
-  FIXTURE_GIST_ID,
-  fixtureGistFilename,
-  fixtureGistResponse,
-} from "../test-fixtures";
+import { FIXTURE_GIST_ID, fixtureGistFilename, fixtureGistResponse } from "../test-fixtures";
 
 describe("createLinkFileToGist", () => {
   const gist = fixtureGistResponse();

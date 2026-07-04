@@ -1,8 +1,5 @@
 import * as v from "valibot";
-import {
-  GistResponse,
-  GistResponseSchema,
-} from "./boundary/gist-response-schema";
+import { GistResponse, GistResponseSchema } from "./boundary/gist-response-schema";
 import { FileLink } from "./domain/file-link";
 import { GistFilename } from "./domain/gist-filename";
 import { GistId } from "./domain/gist-id";
@@ -30,11 +27,9 @@ export const fixtureGistResponseInput = {
 
 export const fixtureGistId = () => GistId.parse(FIXTURE_GIST_ID)._unsafeUnwrap();
 
-export const fixtureGistFilename = (name: string) =>
-  GistFilename.parse(name)._unsafeUnwrap();
+export const fixtureGistFilename = (name: string) => GistFilename.parse(name)._unsafeUnwrap();
 
-export const fixtureFileLink = () =>
-  FileLink.create(fixtureFileLinkInput)._unsafeUnwrap();
+export const fixtureFileLink = () => FileLink.create(fixtureFileLinkInput)._unsafeUnwrap();
 
 export const fixtureGistResponse = () =>
   GistResponse.parse(fixtureGistResponseInput)._unsafeUnwrap();

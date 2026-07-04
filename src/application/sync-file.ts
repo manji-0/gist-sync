@@ -20,12 +20,10 @@ export type SyncFileInput = Readonly<{
 const toFileLinkAsync = (
   response: import("../boundary/gist-response-schema").GistResponse,
   filename: import("../domain/gist-filename").GistFilename,
-  options: { overwrite: boolean }
+  options: { overwrite: boolean },
 ) => {
   const linkResult = GistResponse.toFileLink(response, filename, options);
-  return linkResult.isErr()
-    ? errAsync(linkResult.error)
-    : okAsync(linkResult.value);
+  return linkResult.isErr() ? errAsync(linkResult.error) : okAsync(linkResult.value);
 };
 
 export const createSyncFile = (client: GistClient) => ({
@@ -36,18 +34,13 @@ export const createSyncFile = (client: GistClient) => ({
       case "CreateGist":
         return client
           .createGist(plan)
-          .andThen((response) =>
-            toFileLinkAsync(response, plan.filename, { overwrite: false })
-          );
+          .andThen((response) => toFileLinkAsync(response, plan.filename, { overwrite: false }));
 
       case "RenameFile":
         return client
           .getGist(plan.gistId)
           .andThen((gist) => {
-            const allowed = SyncPatch.ensureRenameAllowed(
-              GistResponse.filenames(gist),
-              plan
-            );
+            const allowed = SyncPatch.ensureRenameAllowed(GistResponse.filenames(gist), plan);
             if (allowed.isErr()) {
               return errAsync(allowed.error);
             }
@@ -56,17 +49,15 @@ export const createSyncFile = (client: GistClient) => ({
           .andThen((response) =>
             toFileLinkAsync(response, plan.toFilename, {
               overwrite: plan.allowOverwrite,
-            }).map(FileLinkDomain.clearPendingRename)
+            }).map(FileLinkDomain.clearPendingRename),
           );
 
       case "UpdateFile":
-        return client
-          .applyPatch(plan.gistId, patchFromPlan(plan))
-          .andThen((response) =>
-            toFileLinkAsync(response, plan.filename, {
-              overwrite: input.link?.overwrite ?? false,
-            })
-          );
+        return client.applyPatch(plan.gistId, patchFromPlan(plan)).andThen((response) =>
+          toFileLinkAsync(response, plan.filename, {
+            overwrite: input.link?.overwrite ?? false,
+          }),
+        );
 
       default:
         return assertNever(plan);
@@ -77,7 +68,7 @@ export const createSyncFile = (client: GistClient) => ({
 export type SyncFile = ReturnType<typeof createSyncFile>;
 
 export const createSyncFileUseCase = (
-  getToken: (interactive: boolean) => Promise<
-    import("../boundary/sensitive").Sensitive<string> | undefined
-  >
+  getToken: (
+    interactive: boolean,
+  ) => Promise<import("../boundary/sensitive").Sensitive<string> | undefined>,
 ) => createSyncFile(createGistClient(getToken));

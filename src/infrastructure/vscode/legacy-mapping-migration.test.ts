@@ -64,8 +64,7 @@ describe("migrateLegacyFileLinks", () => {
     ]);
 
     const globalState = {
-      get: <T>(key: string, fallback: T): T =>
-        (store.get(key) as T | undefined) ?? fallback,
+      get: <T>(key: string, fallback: T): T => (store.get(key) as T | undefined) ?? fallback,
       update: async (key: string, value: unknown) => {
         if (value === undefined) {
           store.delete(key);
@@ -110,8 +109,7 @@ describe("migrateLegacyFileLinks", () => {
     ]);
 
     const globalState = {
-      get: <T>(key: string, fallback: T): T =>
-        (store.get(key) as T | undefined) ?? fallback,
+      get: <T>(key: string, fallback: T): T => (store.get(key) as T | undefined) ?? fallback,
       update: async (key: string, value: unknown) => {
         store.set(key, value);
       },

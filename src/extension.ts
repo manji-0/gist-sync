@@ -18,35 +18,34 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
   context.subscriptions.push(
     statusBar,
     vscode.commands.registerCommand("gistSync.toggleSyncMode", (uri?: vscode.Uri) =>
-      syncManager.toggleSyncMode(uri)
+      syncManager.toggleSyncMode(uri),
     ),
     vscode.commands.registerCommand("gistSync.enableSync", (uri?: vscode.Uri) =>
-      syncManager.enableSync(uri)
+      syncManager.enableSync(uri),
     ),
     vscode.commands.registerCommand("gistSync.syncNow", (uri?: vscode.Uri) =>
-      syncManager.syncNow(uri)
+      syncManager.syncNow(uri),
     ),
     vscode.commands.registerCommand("gistSync.openGist", (uri?: vscode.Uri) =>
-      syncManager.openGist(uri)
+      syncManager.openGist(uri),
     ),
     vscode.commands.registerCommand("gistSync.copyGistUrl", (uri?: vscode.Uri) =>
-      syncManager.copyGistUrl(uri)
+      syncManager.copyGistUrl(uri),
     ),
     vscode.commands.registerCommand("gistSync.linkGist", (uri?: vscode.Uri) =>
-      syncManager.linkGist(uri)
+      syncManager.linkGist(uri),
     ),
-    vscode.commands.registerCommand(
-      "gistSync.linkGistOverwrite",
-      (uri?: vscode.Uri) => syncManager.linkGistOverwrite(uri)
+    vscode.commands.registerCommand("gistSync.linkGistOverwrite", (uri?: vscode.Uri) =>
+      syncManager.linkGistOverwrite(uri),
     ),
     vscode.commands.registerCommand("gistSync.unlinkGist", (uri?: vscode.Uri) =>
-      syncManager.unlinkGist(uri)
+      syncManager.unlinkGist(uri),
     ),
     vscode.commands.registerCommand("gistSync.signIn", async () => {
       const ok = await auth.signIn();
       if (!ok) {
         void vscode.window.showWarningMessage(
-          "GitHub sign-in was cancelled or the GitHub authentication provider is unavailable."
+          "GitHub sign-in was cancelled or the GitHub authentication provider is unavailable.",
         );
       }
       syncManager.refreshUi();
@@ -68,13 +67,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
       }
     }),
     vscode.window.onDidChangeActiveTextEditor(() => syncManager.refreshUi()),
-    vscode.workspace.onDidSaveTextDocument((doc) =>
-      syncManager.handleDocumentSave(doc)
-    ),
-    vscode.workspace.onDidRenameFiles((event) =>
-      syncManager.handleFileRename(event)
-    ),
-    syncManager
+    vscode.workspace.onDidSaveTextDocument((doc) => syncManager.handleDocumentSave(doc)),
+    vscode.workspace.onDidRenameFiles((event) => syncManager.handleFileRename(event)),
+    syncManager,
   );
 
   syncManager.refreshUi();

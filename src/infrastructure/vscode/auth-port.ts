@@ -16,19 +16,15 @@ export type AuthPort = Readonly<{
 }>;
 
 const hasGetProviderIds = (
-  auth: typeof vscode.authentication
+  auth: typeof vscode.authentication,
 ): auth is typeof vscode.authentication & {
   getProviderIds: () => readonly string[];
-} =>
-  "getProviderIds" in auth &&
-  typeof auth.getProviderIds === "function";
+} => "getProviderIds" in auth && typeof auth.getProviderIds === "function";
 
 const wrapToken = (token: string | undefined): Sensitive<string> | undefined =>
   token ? Sensitive.of(token) : undefined;
 
-export const createVscodeAuthPort = (
-  context: vscode.ExtensionContext
-): AuthPort => {
+export const createVscodeAuthPort = (context: vscode.ExtensionContext): AuthPort => {
   const getAuthMethod = (): AuthMethod => readGistSyncConfig().authMethod;
 
   const isOAuthProviderAvailable = (): boolean => {
@@ -40,14 +36,12 @@ export const createVscodeAuthPort = (
   };
 
   const getSession = async (
-    interactive: boolean
+    interactive: boolean,
   ): Promise<vscode.AuthenticationSession | undefined> => {
     try {
-      return await vscode.authentication.getSession(
-        GITHUB_AUTH_PROVIDER,
-        [...GIST_SCOPES],
-        { createIfNone: interactive }
-      );
+      return await vscode.authentication.getSession(GITHUB_AUTH_PROVIDER, [...GIST_SCOPES], {
+        createIfNone: interactive,
+      });
     } catch (error) {
       if (!interactive) {
         return undefined;
@@ -56,9 +50,7 @@ export const createVscodeAuthPort = (
     }
   };
 
-  const getOAuthToken = async (
-    interactive: boolean
-  ): Promise<string | undefined> => {
+  const getOAuthToken = async (interactive: boolean): Promise<string | undefined> => {
     try {
       const session = await getSession(interactive);
       return session?.accessToken;
@@ -70,9 +62,7 @@ export const createVscodeAuthPort = (
   const getPatToken = async (): Promise<string | undefined> =>
     (await context.secrets.get("gistSync.githubToken")) || undefined;
 
-  const getToken = async (
-    interactive: boolean
-  ): Promise<Sensitive<string> | undefined> => {
+  const getToken = async (interactive: boolean): Promise<Sensitive<string> | undefined> => {
     const method = getAuthMethod();
 
     if (method === "pat") {
@@ -83,9 +73,7 @@ export const createVscodeAuthPort = (
       return wrapToken(await getOAuthToken(interactive));
     }
 
-    return wrapToken(
-      (await getOAuthToken(interactive)) ?? (await getPatToken())
-    );
+    return wrapToken((await getOAuthToken(interactive)) ?? (await getPatToken()));
   };
 
   const promptForPat = async (): Promise<boolean> => {
@@ -119,7 +107,7 @@ export const createVscodeAuthPort = (
       }
 
       void vscode.window.showWarningMessage(
-        "gistSync.githubToken in settings is deprecated. Your token was copied to secure storage — remove it from settings.json."
+        "gistSync.githubToken in settings is deprecated. Your token was copied to secure storage — remove it from settings.json.",
       );
     },
 
@@ -137,7 +125,7 @@ export const createVscodeAuthPort = (
 
       if (method === "oauth" && !isOAuthProviderAvailable()) {
         void vscode.window.showWarningMessage(
-          "GitHub authentication provider is unavailable in this editor."
+          "GitHub authentication provider is unavailable in this editor.",
         );
         return false;
       }
@@ -153,7 +141,7 @@ export const createVscodeAuthPort = (
       const choice = await vscode.window.showWarningMessage(
         "GitHub sign-in was cancelled or unavailable. Use a Personal Access Token instead?",
         "Enter Token",
-        "Cancel"
+        "Cancel",
       );
       return choice === "Enter Token" ? promptForPat() : false;
     },
@@ -161,7 +149,7 @@ export const createVscodeAuthPort = (
     signIn: async () => {
       if (!isOAuthProviderAvailable()) {
         void vscode.window.showWarningMessage(
-          "GitHub authentication provider is unavailable in this editor."
+          "GitHub authentication provider is unavailable in this editor.",
         );
         return false;
       }
@@ -173,9 +161,7 @@ export const createVscodeAuthPort = (
         }
         const session = await getSession(false);
         const label = session?.account.label ?? "GitHub";
-        void vscode.window.showInformationMessage(
-          `Signed in to GitHub as ${label}.`
-        );
+        void vscode.window.showInformationMessage(`Signed in to GitHub as ${label}.`);
         return true;
       } catch {
         return false;

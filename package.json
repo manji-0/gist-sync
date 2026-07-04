@@ -1,33 +1,54 @@
 {
   "name": "gist-sync",
   "displayName": "Gist Sync",
-  "description": "Sync Markdown files to GitHub Gist with per-file sync mode, OAuth, and status bar controls",
   "version": "0.2.4",
-  "packageManager": "pnpm@10.12.1",
-  "publisher": "gist-sync",
+  "description": "Sync Markdown files to GitHub Gist with per-file sync mode, OAuth, and status bar controls",
+  "categories": [
+    "Other"
+  ],
+  "homepage": "https://github.com/manji-0/gist-sync#readme",
+  "bugs": {
+    "url": "https://github.com/manji-0/gist-sync/issues"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/manji-0/gist-sync.git"
   },
-  "bugs": {
-    "url": "https://github.com/manji-0/gist-sync/issues"
-  },
-  "homepage": "https://github.com/manji-0/gist-sync#readme",
-  "engines": {
-    "vscode": "^1.85.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "onStartupFinished",
-    "onLanguage:markdown"
-  ],
-  "extensionDependencies": [
-    "vscode.github-authentication"
-  ],
+  "publisher": "gist-sync",
   "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "rm -rf out && rollup -c",
+    "typecheck": "tsc -p ./ --noEmit",
+    "watch": "rollup -c --watch",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt . --check",
+    "test": "pnpm run typecheck && pnpm run lint && vitest run",
+    "package": "pnpm run compile && mkdir -p dist && pnpm exec vsce package --no-dependencies --out dist/",
+    "dev": "bash ./scripts/dev.sh"
+  },
+  "dependencies": {
+    "@standard-schema/spec": "^1.1.0",
+    "neverthrow": "^8.2.0",
+    "valibot": "^1.4.2"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.0",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.2.1",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
+    "rollup": "^4.62.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.3.3",
+    "vitest": "^3.0.5"
+  },
   "contributes": {
     "commands": [
       {
@@ -175,27 +196,15 @@
       }
     }
   },
-  "scripts": {
-    "vscode:prepublish": "pnpm run compile",
-    "compile": "rm -rf out && esbuild src/extension.ts --bundle --outfile=out/extension.js --platform=node --format=cjs --target=es2022 --external:vscode --minify",
-    "typecheck": "tsc -p ./ --noEmit",
-    "watch": "esbuild src/extension.ts --bundle --outfile=out/extension.js --platform=node --format=cjs --target=es2022 --external:vscode --sourcemap --watch",
-    "test": "pnpm run typecheck && vitest run",
-    "lint": "eslint src --ext ts",
-    "package": "pnpm run compile && mkdir -p dist && pnpm exec vsce package --no-dependencies --out dist/",
-    "dev": "bash ./scripts/dev.sh"
+  "activationEvents": [
+    "onLanguage:markdown",
+    "onStartupFinished"
+  ],
+  "extensionDependencies": [
+    "vscode.github-authentication"
+  ],
+  "engines": {
+    "vscode": "^1.85.0"
   },
-  "devDependencies": {
-    "@types/node": "^20.11.0",
-    "@types/vscode": "^1.85.0",
-    "@vscode/vsce": "^3.2.1",
-    "esbuild": "^0.28.1",
-    "typescript": "^5.3.3",
-    "vitest": "^3.0.5"
-  },
-  "dependencies": {
-    "@standard-schema/spec": "^1.1.0",
-    "neverthrow": "^8.2.0",
-    "valibot": "^1.4.2"
-  }
+  "packageManager": "pnpm@10.12.1"
 }

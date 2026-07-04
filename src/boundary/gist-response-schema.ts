@@ -21,11 +21,7 @@ export const GistResponse = {
   schema: GistResponseSchema,
   parse: schemaResult(GistResponseSchema),
 
-  toFileLink: (
-    response: GistResponse,
-    filename: GistFilename,
-    options: { overwrite: boolean }
-  ) => {
+  toFileLink: (response: GistResponse, filename: GistFilename, options: { overwrite: boolean }) => {
     const file = response.files[filename];
     return FileLink.create({
       gistId: response.id,

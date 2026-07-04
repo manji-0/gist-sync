@@ -1,4 +1,4 @@
-import { err, ok, ResultAsync, errAsync, okAsync, type Result } from "neverthrow";
+import { err, ResultAsync, errAsync, okAsync, type Result } from "neverthrow";
 import type { Sensitive } from "../../boundary/sensitive";
 import type { GistResponse } from "../../boundary/gist-response-schema";
 import { GistResponse as GistResponseParser } from "../../boundary/gist-response-schema";
@@ -12,18 +12,18 @@ const GITHUB_API = "https://api.github.com";
 export type GistClient = Readonly<{
   getGist: (gistId: GistId) => ResultAsync<GistResponse, SyncError>;
   createGist: (
-    plan: Extract<SyncPatchPlan, { kind: "CreateGist" }>
+    plan: Extract<SyncPatchPlan, { kind: "CreateGist" }>,
   ) => ResultAsync<GistResponse, SyncError>;
   applyPatch: (
     gistId: GistId,
-    files: Record<string, { content: string } | null>
+    files: Record<string, { content: string } | null>,
   ) => ResultAsync<GistResponse, SyncError>;
 }>;
 
 const request = async (
   token: Sensitive<string>,
   path: string,
-  init?: { method?: string; body?: unknown }
+  init?: { method?: string; body?: unknown },
 ): Promise<Result<GistResponse, SyncError>> => {
   const response = await fetch(`${GITHUB_API}${path}`, {
     method: init?.method ?? "GET",
@@ -69,30 +69,33 @@ const request = async (
 
 const withToken = <T>(
   getToken: (interactive: boolean) => Promise<Sensitive<string> | undefined>,
-  run: (token: Sensitive<string>) => Promise<Result<T, SyncError>>
+  run: (token: Sensitive<string>) => Promise<Result<T, SyncError>>,
 ): ResultAsync<T, SyncError> =>
-  ResultAsync.fromPromise(getToken(true), (): SyncError => ({
-    kind: "GitHubApiError",
-    status: 0,
-    message: "Failed to read auth token",
-  })).andThen((token) => {
+  ResultAsync.fromPromise(
+    getToken(true),
+    (): SyncError => ({
+      kind: "GitHubApiError",
+      status: 0,
+      message: "Failed to read auth token",
+    }),
+  ).andThen((token) => {
     if (!token) {
       return errAsync<T, SyncError>({ kind: "NotAuthenticated" });
     }
-    return ResultAsync.fromPromise(run(token), (): SyncError => ({
-      kind: "GitHubApiError",
-      status: 0,
-      message: "Unexpected GitHub API failure",
-    })).andThen((result) =>
-      result.isErr() ? errAsync(result.error) : okAsync(result.value)
-    );
+    return ResultAsync.fromPromise(
+      run(token),
+      (): SyncError => ({
+        kind: "GitHubApiError",
+        status: 0,
+        message: "Unexpected GitHub API failure",
+      }),
+    ).andThen((result) => (result.isErr() ? errAsync(result.error) : okAsync(result.value)));
   });
 
 export const createGistClient = (
-  getToken: (interactive: boolean) => Promise<Sensitive<string> | undefined>
+  getToken: (interactive: boolean) => Promise<Sensitive<string> | undefined>,
 ): GistClient => ({
-  getGist: (gistId) =>
-    withToken(getToken, (token) => request(token, `/gists/${gistId}`)),
+  getGist: (gistId) => withToken(getToken, (token) => request(token, `/gists/${gistId}`)),
 
   createGist: (plan) =>
     withToken(getToken, (token) =>
@@ -105,7 +108,7 @@ export const createGistClient = (
             [plan.filename]: { content: plan.content },
           },
         },
-      })
+      }),
     ),
 
   applyPatch: (gistId, files) =>
@@ -113,13 +116,11 @@ export const createGistClient = (
       request(token, `/gists/${gistId}`, {
         method: "PATCH",
         body: { files },
-      })
+      }),
     ),
 });
 
-export const patchFromPlan = (
-  plan: SyncPatchPlan
-): Record<string, { content: string } | null> => {
+export const patchFromPlan = (plan: SyncPatchPlan): Record<string, { content: string } | null> => {
   switch (plan.kind) {
     case "CreateGist":
       return { [plan.filename]: { content: plan.content } };

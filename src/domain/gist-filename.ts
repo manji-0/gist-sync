@@ -6,7 +6,7 @@ import type { SyncError } from "./sync-errors";
 const GistFilenameSchema = v.pipe(
   v.string(),
   v.minLength(1, "Filename is required"),
-  v.brand("GistFilename")
+  v.brand("GistFilename"),
 );
 
 export type GistFilename = v.InferOutput<typeof GistFilenameSchema>;
@@ -26,7 +26,7 @@ export const GistFilename = {
     localName: GistFilename,
     gistFilenames: ReadonlyArray<GistFilename>,
     mode: LinkFilenameMode,
-    selected?: GistFilename
+    selected?: GistFilename,
   ): Result<GistFilename, SyncError> => {
     if (mode === "overwrite") {
       return ok(localName);

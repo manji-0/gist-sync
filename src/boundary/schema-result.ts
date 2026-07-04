@@ -6,9 +6,7 @@ export type ValidationError = Readonly<{
   issues: ReadonlyArray<StandardSchemaV1.Issue>;
 }>;
 
-export const formatValidationIssues = (
-  issues: ReadonlyArray<StandardSchemaV1.Issue>
-): string =>
+export const formatValidationIssues = (issues: ReadonlyArray<StandardSchemaV1.Issue>): string =>
   issues
     .map((issue) => issue.message)
     .filter(Boolean)

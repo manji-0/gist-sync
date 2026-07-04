@@ -13,7 +13,7 @@ describe("formatSyncError", () => {
         kind: "GitHubApiError",
         status: 401,
         message: "Unauthorized",
-      })
+      }),
     ).toContain("Authentication failed");
   });
 
@@ -22,7 +22,7 @@ describe("formatSyncError", () => {
       formatSyncError({
         kind: "ValidationError",
         issues: [{ message: "bad field" }, { message: "missing id" }],
-      })
+      }),
     ).toBe("bad field; missing id");
   });
 
@@ -33,7 +33,7 @@ describe("formatSyncError", () => {
         gistId: fixtureGistId(),
         filename: fixtureGistFilename("foo.md"),
         existingUri: "file:///other.md",
-      })
-    ).toContain('foo.md');
+      }),
+    ).toContain("foo.md");
   });
 });

@@ -9,9 +9,7 @@ describe("GistId", () => {
   });
 
   it("parses gist.github.com URLs", () => {
-    expect(GistId.parseFromUrl(`https://gist.github.com/user/${gistId}`).isOk()).toBe(
-      true
-    );
+    expect(GistId.parseFromUrl(`https://gist.github.com/user/${gistId}`).isOk()).toBe(true);
   });
 
   it("rejects invalid input", () => {

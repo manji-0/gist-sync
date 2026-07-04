@@ -32,6 +32,6 @@ export const readGistSyncConfig = (): GistSyncConfig => {
 
   return result.match(
     (config) => config,
-    () => ({ ...defaultConfig })
+    () => ({ ...defaultConfig }),
   );
 };

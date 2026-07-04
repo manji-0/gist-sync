@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  FIXTURE_GIST_ID,
-  fixtureFileLink,
-  fixtureGistFilename,
-  fixtureGistId,
-} from "../test-fixtures";
+import { fixtureFileLink, fixtureGistFilename, fixtureGistId } from "../test-fixtures";
 import { SyncPatch } from "./sync-patch";
 
 describe("SyncPatch", () => {
@@ -19,7 +14,7 @@ describe("SyncPatch", () => {
         content: "hello",
         description: "foo.md",
         isPublic: false,
-      }).kind
+      }).kind,
     ).toBe("CreateGist");
   });
 
@@ -32,7 +27,7 @@ describe("SyncPatch", () => {
         content: "hello",
         description: "foo.md",
         isPublic: false,
-      }).kind
+      }).kind,
     ).toBe("UpdateFile");
   });
 

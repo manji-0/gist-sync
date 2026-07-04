@@ -17,11 +17,8 @@ export type SyncStateStore = Readonly<{
   migrateFile: (oldUri: string, newUri: string) => Promise<void>;
 }>;
 
-export const createSyncStateStore = (
-  globalState: vscode.Memento
-): SyncStateStore => {
-  const readEnabled = (): Set<string> =>
-    new Set(globalState.get<string[]>(SYNC_ENABLED_KEY, []));
+export const createSyncStateStore = (globalState: vscode.Memento): SyncStateStore => {
+  const readEnabled = (): Set<string> => new Set(globalState.get<string[]>(SYNC_ENABLED_KEY, []));
 
   const readLinks = (): Map<string, FileLink> => {
     const raw = globalState.get<Record<string, unknown>>(FILE_LINKS_KEY, {});
@@ -36,7 +33,7 @@ export const createSyncStateStore = (
     });
     if (failures > 0) {
       void vscode.window.showWarningMessage(
-        `Gist Sync: ${failures} saved link(s) could not be loaded.`
+        `Gist Sync: ${failures} saved link(s) could not be loaded.`,
       );
     }
     return new Map(entries);
@@ -80,11 +77,7 @@ export const createSyncStateStore = (
 
     setLink: async (uri, link) => {
       for (const [otherUri, other] of links) {
-        if (
-          otherUri !== uri &&
-          other.gistId === link.gistId &&
-          other.filename === link.filename
-        ) {
+        if (otherUri !== uri && other.gistId === link.gistId && other.filename === link.filename) {
           return err({
             kind: "LinkConflict",
             gistId: link.gistId,

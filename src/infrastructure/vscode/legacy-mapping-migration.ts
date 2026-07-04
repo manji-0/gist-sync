@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { err, ok, type Result } from "neverthrow";
+import { err, type Result } from "neverthrow";
 import * as v from "valibot";
 import { schemaResult } from "../../boundary/schema-result";
 import type { FileLink } from "../../domain/file-link";
@@ -56,9 +56,7 @@ export const migrateLegacyMapping = (raw: unknown): Result<FileLink, void> => {
   }).mapErr(() => undefined);
 };
 
-export const migrateLegacyFileLinks = async (
-  globalState: vscode.Memento
-): Promise<number> => {
+export const migrateLegacyFileLinks = async (globalState: vscode.Memento): Promise<number> => {
   const current = globalState.get<Record<string, unknown>>(FILE_LINKS_KEY, {});
   if (Object.keys(current).length > 0) {
     return 0;
@@ -78,7 +76,7 @@ export const migrateLegacyFileLinks = async (
   await globalState.update(LEGACY_MAPPINGS_KEY, undefined);
 
   void vscode.window.showInformationMessage(
-    `Gist Sync: migrated ${migrated.length} saved link(s) from a previous version.`
+    `Gist Sync: migrated ${migrated.length} saved link(s) from a previous version.`,
   );
 
   return migrated.length;

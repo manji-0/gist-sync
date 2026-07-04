@@ -69,7 +69,7 @@ export const SyncPatch = {
 
   ensureRenameAllowed: (
     existingFilenames: ReadonlyArray<GistFilename>,
-    plan: Extract<SyncPatchPlan, { kind: "RenameFile" }>
+    plan: Extract<SyncPatchPlan, { kind: "RenameFile" }>,
   ): Result<void, SyncError> => {
     if (plan.allowOverwrite) {
       return ok(undefined);

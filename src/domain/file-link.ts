@@ -25,14 +25,12 @@ export const FileLink = {
   schema: FileLinkSchema,
   parse: schemaResult(FileLinkSchema),
 
-  create: (input: v.InferInput<typeof FileLinkSchema>) =>
-    schemaResult(FileLinkSchema)(input),
+  create: (input: v.InferInput<typeof FileLinkSchema>) => schemaResult(FileLinkSchema)(input),
 
   clearPendingRename: (link: FileLink): FileLink => ({
     ...link,
     pendingRename: undefined,
   }),
 
-  key: (gistId: GistIdType, filename: GistFilenameType): string =>
-    `${gistId}:${filename}`,
+  key: (gistId: GistIdType, filename: GistFilenameType): string => `${gistId}:${filename}`,
 } as const;
