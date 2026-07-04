@@ -1,8 +1,8 @@
 {
   "name": "gist-sync",
   "displayName": "Gist Sync",
-  "description": "Sync Markdown files to GitHub Gist when sync mode is enabled",
-  "version": "0.2.2",
+  "description": "Sync Markdown files to GitHub Gist with per-file sync mode, OAuth, and status bar controls",
+  "version": "0.2.3",
   "packageManager": "pnpm@10.12.1",
   "publisher": "gist-sync",
   "license": "MIT",
@@ -30,6 +30,10 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "gistSync.enableSync",
+        "title": "Gist Sync: Enable Sync"
+      },
       {
         "command": "gistSync.toggleSyncMode",
         "title": "Gist Sync: Toggle Sync Mode",
@@ -173,7 +177,7 @@
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
-    "compile": "rm -rf out && esbuild src/extension.ts --bundle --outfile=out/extension.js --platform=node --format=cjs --target=es2022 --external:vscode --sourcemap",
+    "compile": "rm -rf out && esbuild src/extension.ts --bundle --outfile=out/extension.js --platform=node --format=cjs --target=es2022 --external:vscode --minify",
     "typecheck": "tsc -p ./ --noEmit",
     "watch": "esbuild src/extension.ts --bundle --outfile=out/extension.js --platform=node --format=cjs --target=es2022 --external:vscode --sourcemap --watch",
     "test": "pnpm run typecheck && vitest run",

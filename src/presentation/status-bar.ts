@@ -10,7 +10,6 @@ export class StatusBar {
       vscode.StatusBarAlignment.Right,
       100
     );
-    this.item.command = "gistSync.toggleSyncMode";
   }
 
   showForMarkdown(
@@ -21,6 +20,14 @@ export class StatusBar {
     const enabled = store.isSyncEnabled(uri);
     const mapping = link ?? store.getLink(uri);
 
+    if (!enabled) {
+      this.item.command = "gistSync.enableSync";
+    } else if (mapping) {
+      this.item.command = "gistSync.copyGistUrl";
+    } else {
+      this.item.command = "gistSync.toggleSyncMode";
+    }
+
     this.item.text = enabled
       ? mapping
         ? "$(cloud-upload) Gist Sync: ON"
@@ -29,9 +36,9 @@ export class StatusBar {
 
     this.item.tooltip = enabled
       ? mapping
-        ? `Synced to ${mapping.gistUrl}\nClick to disable sync mode\nRun "Copy Gist URL" to copy the link`
-        : "Sync mode ON — will sync on save\nClick to disable"
-      : "Sync mode OFF — click to enable";
+        ? `Synced to ${mapping.gistUrl}\nClick to copy Gist URL`
+        : "Sync mode ON — will sync on save\nClick to toggle sync mode"
+      : "Sync mode OFF — click to choose how to enable";
 
     this.item.backgroundColor = enabled
       ? undefined

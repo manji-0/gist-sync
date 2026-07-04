@@ -20,6 +20,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     vscode.commands.registerCommand("gistSync.toggleSyncMode", (uri?: vscode.Uri) =>
       syncManager.toggleSyncMode(uri)
     ),
+    vscode.commands.registerCommand("gistSync.enableSync", (uri?: vscode.Uri) =>
+      syncManager.enableSync(uri)
+    ),
     vscode.commands.registerCommand("gistSync.syncNow", (uri?: vscode.Uri) =>
       syncManager.syncNow(uri)
     ),

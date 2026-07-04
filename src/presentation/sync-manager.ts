@@ -81,6 +81,61 @@ export class SyncManager implements vscode.Disposable {
     await this.syncDocument(target, { force: true });
   }
 
+  async enableSync(uri?: vscode.Uri): Promise<void> {
+    const target = this.resolveMarkdownUri(uri);
+    if (!target) {
+      return;
+    }
+
+    const key = target.toString();
+    if (this.deps.store.isSyncEnabled(key)) {
+      return;
+    }
+
+    const picked = await vscode.window.showQuickPick(
+      [
+        {
+          label: "$(add) Create new Gist",
+          description: "Create a new Gist from this file",
+          mode: "new" as const,
+        },
+        {
+          label: "$(link) Link existing Gist",
+          description: "Paste a Gist URL or ID",
+          mode: "link" as const,
+        },
+      ],
+      {
+        title: "Enable Gist Sync",
+        placeHolder: "Choose how to sync this file",
+      }
+    );
+    if (!picked) {
+      return;
+    }
+
+    if (!(await this.deps.auth.ensureAuthenticated())) {
+      return;
+    }
+
+    if (picked.mode === "new") {
+      await this.deps.store.setSyncEnabled(key, true);
+      this.refreshUi(target);
+      void vscode.window.showInformationMessage(
+        "Gist Sync enabled. Creating Gist..."
+      );
+      await this.syncDocument(target, { force: true });
+      return;
+    }
+
+    const hadLink = Boolean(this.deps.store.getLink(key));
+    await this.linkGist(target, "select");
+    if (!hadLink && this.deps.store.getLink(key)) {
+      await this.deps.store.setSyncEnabled(key, true);
+      this.refreshUi(target);
+    }
+  }
+
   async syncNow(uri?: vscode.Uri): Promise<void> {
     const target = this.resolveMarkdownUri(uri);
     if (target) {
