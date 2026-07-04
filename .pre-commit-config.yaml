@@ -1,0 +1,19 @@
+# Managed with prek — run `prek install` after clone.
+# https://prek.j178.dev/
+
+default_install_hook_types:
+  - pre-commit
+
+repos:
+  - repo: local
+    hooks:
+      - id: oxlint
+        name: oxlint
+        entry: pnpm exec oxlint --fix
+        language: system
+        types_or: [ts, javascript]
+      - id: oxfmt
+        name: oxfmt
+        entry: pnpm exec oxfmt --write --no-error-on-unmatched-pattern
+        language: system
+        types_or: [ts, javascript, json, markdown, yaml]

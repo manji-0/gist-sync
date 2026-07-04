@@ -1,9 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.2/.schema/devbox.schema.json",
-  "packages": ["nodejs_22@latest", "pnpm_10@latest"],
+  "packages": ["nodejs_22@latest", "pnpm_10@latest", "prek@latest"],
   "shell": {
     "scripts": {
-      "bootstrap": ["pnpm install"],
+      "bootstrap": ["pnpm install", "prek install"],
       "compile": ["pnpm run compile"],
       "test": ["pnpm test"],
       "lint": ["pnpm run lint"],

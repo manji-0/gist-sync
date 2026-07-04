@@ -138,7 +138,7 @@ Runtime dependencies (`valibot`, `neverthrow`) are bundled with **Rollup** into 
 With [devbox](https://www.jetify.com/devbox):
 
 ```bash
-devbox run bootstrap   # pnpm install
+devbox run bootstrap   # pnpm install && prek install (git hooks)
 devbox run compile     # Rollup bundle (minified)
 devbox run test        # tsc + oxlint + vitest
 devbox run package     # dist/*.vsix
@@ -149,6 +149,7 @@ Without devbox:
 
 ```bash
 pnpm install
+prek install           # register pre-commit hooks (oxlint + oxfmt)
 pnpm run compile
 pnpm test              # typecheck + oxlint + vitest
 pnpm run lint          # oxlint only
@@ -156,6 +157,8 @@ pnpm run format        # oxfmt
 pnpm run package
 pnpm run dev
 ```
+
+`oxlint` and `oxfmt` run on every commit via [prek](https://prek.j178.dev/). To check hooks manually: `prek run --all-files`.
 
 `pnpm run watch` rebuilds with source maps for local debugging.
 
